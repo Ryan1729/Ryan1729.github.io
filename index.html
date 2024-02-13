@@ -1,0 +1,98 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<style type="text/css">
+body{
+    line-height:1.6;
+    font-size:18px;
+    color:#eee;
+    background-color:#222;
+}
+a:link {
+    color: #3352e1;
+}
+a:visited {
+    color: #533354
+}
+.border-bottom {
+    border-bottom: solid;
+}
+.monospace {
+    font-family: monospace;
+}
+</style>
+</head>
+<body>
+<div id="the-list"></div>
+</body>
+<script>
+(async () => {
+    const listParent = document.getElementById("the-list")
+    
+    const username = "Ryan1729"
+
+    const repos = [];
+    const perPage = 100
+    let page = 1
+
+    // Try to avoid using up our 60 calls per hour if there's bugs
+    let callsLeft = 10
+
+    while (callsLeft) {
+        const response = await fetch(`https://api.github.com/users/${username}/repos?per_page=${perPage}&page=${page}`);
+        callsLeft -= 1
+        try {
+            const loadedRepos = await response.json();
+
+            for (repo of loadedRepos) {
+                repos.push(repo)
+            }
+            
+            if (loadedRepos.length < perPage) {
+                break
+            }
+
+            page += 1
+        } catch (error) {
+            listParent.innerText = response.status + (response.statusText ? " " + response.statusText: "") + ": " + error.message
+            
+            return
+        }
+    }
+
+    listParent.textContent = ""
+
+    for (repo of repos) {
+        if (
+            repo.fork
+            || repo.owner.login !== username
+            || repo.archived
+            || repo.disabled
+        ) {
+            continue
+        }
+
+        const article = document.createElement("article")
+        
+        const filtered = Object.keys(repo)
+          .filter(key => !key.startsWith("has") && !key.endsWith("url") && !key.endsWith("count") && !["archived", "disabled", "id", "node_id", "full_name", "private", "owner", "name", "description", "fork", "web_commit_signoff_required", "allow_forking", "is_template", "visibility", "forks", "open_issues", "watchers", "default_branch"].includes(key))
+          .reduce((obj, key) => {
+            obj[key] = repo[key];
+            return obj;
+          }, {});
+        
+        article.innerHTML = `
+            <h3><a href="${repo.html_url}">${repo.name}</a></h3>
+            
+            <p>${repo.description || ""}</p>
+            
+            <p class="monospace">${JSON.stringify(filtered)}</p>
+        `
+        article.className = "border-bottom"
+
+        listParent.appendChild(article)
+    }
+})()
+</script>
+</html>
