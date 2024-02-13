@@ -132,7 +132,9 @@ a:visited {
             sortButton.innerText = nextMode
 
             article.innerHTML = `
-                <h3><a href="${repo.html_url}">${repo.name}</a></h3>
+                <h3>${repo.homepage ? `<a href="${repo.homepage}">${repo.name}</a>` : repo.name}</h3>
+
+                <a href="${repo.html_url}">repo</a></h3>
 
                 <p>${repo.description || ""}</p>
 
