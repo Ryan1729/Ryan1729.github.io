@@ -29,7 +29,33 @@ a:visited {
 <div id="the-list"></div>
 </body>
 <script>
+
 (async () => {
+    // Based on https://stackoverflow.com/a/20732091
+    const BYTES_SUFFIXES = ['B', 'kB', 'MB', 'GB', 'TB']
+    function humanFileSize(sizeInBytes) {
+        var i = sizeInBytes == 0 ? 0 : Math.floor(Math.log(sizeInBytes) / Math.log(1024));
+        return (sizeInBytes / Math.pow(1024, i)).toFixed(2) * 1 + ' ' + BYTES_SUFFIXES[i];
+    }
+
+    function renderList(strings) {
+        if (strings.length === 0) {
+            return ""
+        }
+
+        let output = "<ul>"
+
+        for (str of strings) {
+            output += "<li>"
+            output += str
+            output += "</li>"
+        }
+
+        output += "</ul>"
+
+        return output
+    }
+
     const sortButtonLabel = document.getElementById("sort-button-label")
     const sortButton = document.getElementById("sort-button")
     const listParent = document.getElementById("the-list")
@@ -121,24 +147,25 @@ a:visited {
 
             const article = document.createElement("article")
 
-            const filtered = Object.keys(repo)
-              .filter(key => !key.startsWith("has") && !key.endsWith("url") && !key.endsWith("count") && !["archived", "disabled", "id", "node_id", "full_name", "private", "owner", "name", "description", "fork", "web_commit_signoff_required", "allow_forking", "is_template", "visibility", "forks", "open_issues", "watchers", "default_branch"].includes(key))
-              .reduce((obj, key) => {
-                obj[key] = repo[key];
-                return obj;
-              }, {});
-
             sortButtonLabel.innerText = mode
             sortButton.innerText = nextMode
 
             article.innerHTML = `
                 <h3>${repo.homepage ? `<a href="${repo.homepage}">${repo.name}</a>` : repo.name}</h3>
 
-                <a href="${repo.html_url}">repo</a></h3>
-
                 <p>${repo.description || ""}</p>
 
-                <p class="monospace">${JSON.stringify(filtered)}</p>
+                <a href="${repo.html_url}">
+                    (${humanFileSize(repo.size * 1024)}
+                     ${repo.language ? (" of mainly " + repo.language) : ""}
+                     ${(repo.license && repo.license.name !== "Other") ? ("License: " + repo.license.name) : ""}
+                    )
+                </a>
+
+                <p>Created: ${repo.created_at}</p
+                <p>Updated: ${repo.updated_at}</p>
+
+                ${renderList(repo.topics)}
             `
             article.className = "border-bottom"
 
