@@ -108,6 +108,93 @@ a:visited {
 
     const nextModeIndex = (modeIndex) => (modeIndex + 1) % MODES.length
 
+    const INCOMPLETE_PROBABLY_FOREVER = `
+    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="172" height="20" role="img" aria-label="incomplete: probably forever">
+      <title>incomplete: probably forever</title>
+      <linearGradient id="s" x2="0" y2="100%">
+        <stop offset="0" stop-color="#bbb" stop-opacity=".1" />
+        <stop offset="1" stop-opacity=".1" />
+      </linearGradient>
+      <clipPath id="r">
+        <rect width="172" height="20" rx="3" fill="#fff" />
+      </clipPath>
+      <g clip-path="url(#r)">
+        <rect width="71" height="20" fill="#222" />
+        <rect x="71" width="101" height="20" fill="#5a7d8b" />
+        <rect width="172" height="20" fill="url(#s)" />
+      </g>
+      <g fill="#fff" text-anchor="middle" font-family="Verdana,Geneva,DejaVu Sans,sans-serif" text-rendering="geometricPrecision" font-size="110">
+        <text aria-hidden="true" x="365" y="150" fill="#010101" fill-opacity=".3" transform="scale(.1)" textLength="610">incomplete</text>
+        <text x="365" y="140" transform="scale(.1)" fill="#fff" textLength="610">incomplete</text>
+        <text aria-hidden="true" x="1205" y="150" fill="#010101" fill-opacity=".3" transform="scale(.1)" textLength="910">probably forever</text>
+        <text x="1205" y="140" transform="scale(.1)" fill="#fff" textLength="910">probably forever</text>
+      </g>
+    </svg>
+    `
+
+    const COMPLETE_NO_UPDATES_EXPECTED = `
+    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="186" height="20" role="img" aria-label="complete: no updates expected">
+      <title>complete: no updates expected</title>
+      <linearGradient id="s" x2="0" y2="100%">
+        <stop offset="0" stop-color="#bbb" stop-opacity=".1" />
+        <stop offset="1" stop-opacity=".1" />
+      </linearGradient>
+      <clipPath id="r">
+        <rect width="186" height="20" rx="3" fill="#fff" />
+      </clipPath>
+      <g clip-path="url(#r)">
+        <rect width="61" height="20" fill="#222" />
+        <rect x="61" width="125" height="20" fill="#30b06e" />
+        <rect width="186" height="20" fill="url(#s)" />
+      </g>
+      <g fill="#fff" text-anchor="middle" font-family="Verdana,Geneva,DejaVu Sans,sans-serif" text-rendering="geometricPrecision" font-size="110">
+        <text aria-hidden="true" x="315" y="150" fill="#010101" fill-opacity=".3" transform="scale(.1)" textLength="510">complete</text>
+        <text x="315" y="140" transform="scale(.1)" fill="#fff" textLength="510">complete</text>
+        <text aria-hidden="true" x="1225" y="150" fill="#010101" fill-opacity=".3" transform="scale(.1)" textLength="1150">no updates expected</text>
+        <text x="1225" y="140" transform="scale(.1)" fill="#fff" textLength="1150">no updates expected</text>
+      </g>
+    </svg>
+    `
+
+    const getBadgeIfAny = (repoName) => {
+        switch (repoName) {
+            case "stru":
+            case "Trigrid":
+            case "phaser-rope-climbing":
+            case "okay-thats-your-negative-fish":
+            case "prop-proc-prog-puzz":
+            case "guilloche":
+            case "palimpsest-processor":
+            case "paper-mario-randomizer":
+            case "stragato":
+            case "summit":
+                return INCOMPLETE_PROBABLY_FOREVER
+            case "FlipAndStick":
+            case "zerobrane-packages":
+            case "icon-nonsense":
+            case "otrio":
+            case "tic-tac-doh":
+            case "triptych":
+            case "game-of-sim":
+            case "eclipse":
+            case "form-or-colour":
+            case "canadian-fish":
+            case "onitama":
+            case "zark-city":
+            case "rrr":
+            case "disgaea-exp-next":
+            case "bin-since":
+            case "text-histogram":
+            case "uuid-img":
+            case "increment_version_number":
+            case "insta-preview":
+            case "random-css":
+                return COMPLETE_NO_UPDATES_EXPECTED
+            default:
+                return ""
+        }
+    }
+
     const render = (modeIndex) => {
         const mode = MODES[modeIndex]
         const nextMode = MODES[nextModeIndex(modeIndex)]
@@ -152,6 +239,8 @@ a:visited {
 
             article.innerHTML = `
                 <h3>${repo.homepage ? `<a href="${repo.homepage}">${repo.name}</a>` : repo.name}</h3>
+
+                ${getBadgeIfAny(repo.name)}
 
                 <p>${repo.description || ""}</p>
 
