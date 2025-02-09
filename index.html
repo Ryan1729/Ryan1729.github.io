@@ -237,10 +237,38 @@ a:visited {
             sortButtonLabel.innerText = mode
             sortButton.innerText = nextMode
 
+
+            let badgeType = ""
+            let nonBadgeTopics = [];
+            for (topic of repo.topics) {
+                switch (topic.toLowerCase()) {
+                    case "incomplete":
+                    case "incomplete_probably_forever":
+                    case "incomplete-probably-forever":
+                    case "incomplete probably forever":
+                    case "incomplete, probably forever":
+                        badgeType = INCOMPLETE_PROBABLY_FOREVER;
+                    break
+                    case "complete":
+                    case "complete_no_updates_expected":
+                    case "complete-no-updates-expected":
+                    case "complete no updates expected":
+                    case "complete, no updates expected":
+                        badgeType = COMPLETE_NO_UPDATES_EXPECTED;
+                    break
+                    default:
+                        nonBadgeTopics.push(topic)
+                }
+            }
+
+            if (badgeType === "") {
+                badgeType = getBadgeIfAny(repo.name);
+            }
+
             article.innerHTML = `
                 <h3>${repo.homepage ? `<a href="${repo.homepage}">${repo.name}</a>` : repo.name}</h3>
 
-                ${getBadgeIfAny(repo.name)}
+                ${badgeType}
 
                 <p>${repo.description || ""}</p>
 
@@ -254,7 +282,7 @@ a:visited {
                 <p>Created: ${repo.created_at}</p
                 <p>Updated: ${repo.updated_at}</p>
 
-                ${renderList(repo.topics)}
+                ${renderList(nonBadgeTopics)}
             `
             article.className = "border-bottom"
 
