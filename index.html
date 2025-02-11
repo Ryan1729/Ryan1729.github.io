@@ -24,6 +24,7 @@ a:visited {
 </style>
 </head>
 <body>
+<div id="badge-gallery"></div>
 <label id="sort-button-label" for="sort-button">Loading ...</label>
 <button id="sort-button">Loading ...</button>
 <div id="the-list"></div>
@@ -56,9 +57,12 @@ a:visited {
         return output
     }
 
-    const sortButtonLabel = document.getElementById("sort-button-label")
-    const sortButton = document.getElementById("sort-button")
-    const listParent = document.getElementById("the-list")
+    const badgeGallery = document.getElementById("badge-gallery");
+    const sortButtonLabel = document.getElementById("sort-button-label");
+    const sortButton = document.getElementById("sort-button");
+    const listParent = document.getElementById("the-list");
+
+
 
     const username = "Ryan1729"
 
@@ -155,6 +159,35 @@ a:visited {
       </g>
     </svg>
     `
+
+    const FEELING_USABLE_MIGHT_UPDATE_LATER = `
+    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="213" height="20" role="img" aria-label="feeling usable: might update later">
+      <title>feeling usable: might update later</title>
+      <linearGradient id="s" x2="0" y2="100%">
+        <stop offset="0" stop-color="#bbb" stop-opacity=".1" />
+        <stop offset="1" stop-opacity=".1" />
+      </linearGradient>
+      <clipPath id="r">
+        <rect width="213" height="20" rx="3" fill="#fff" />
+      </clipPath>
+      <g clip-path="url(#r)">
+        <rect width="88" height="20" fill="#222" />
+        <rect x="88" width="125" height="20" fill="#ffb937" />
+        <rect width="213" height="20" fill="url(#s)" />
+      </g>
+      <g fill="#fff" text-anchor="middle" font-family="Verdana,Geneva,DejaVu Sans,sans-serif" text-rendering="geometricPrecision" font-size="110">
+        <text aria-hidden="true" x="440" y="150" fill="#010101" fill-opacity=".3" transform="scale(.1)" textLength="800">feeling usable</text>
+        <text x="440" y="140" transform="scale(.1)" fill="#fff" textLength="800">feeling usable</text>
+        <text aria-hidden="true" x="1500" y="150" fill="#010101" fill-opacity=".3" transform="scale(.1)" textLength="1200">might update later</text>
+        <text x="1500" y="140" transform="scale(.1)" fill="#fff" textLength="1200">might update later</text>
+      </g>
+    </svg>
+    `;
+
+    // Put the longest one first becasue some state is being set the first time we render one and not when we render later ones
+    // TODO? Track that strange SVG issue down, so we can have consistent rounded corners
+    badgeGallery.innerHTML = `${FEELING_USABLE_MIGHT_UPDATE_LATER} ${INCOMPLETE_PROBABLY_FOREVER} ${COMPLETE_NO_UPDATES_EXPECTED}`;
+    badgeGallery.style.display = "none";
 
     const getBadgeIfAny = (repoName) => {
         switch (repoName) {
@@ -255,6 +288,17 @@ a:visited {
                     case "complete no updates expected":
                     case "complete, no updates expected":
                         badgeType = COMPLETE_NO_UPDATES_EXPECTED;
+                    break
+                    case "usable":
+                    case "feeling usable":
+                    case "might update later":
+                    case "feeling_usable_might_update_later":
+                    case "feeling-usable-might-update-later":
+                    case "feeling usable might update later":
+                    case "feeling usable, might update later":
+                        if (badgeType != COMPLETE_NO_UPDATES_EXPECTED) {
+                            badgeType = FEELING_USABLE_MIGHT_UPDATE_LATER;
+                        }
                     break
                     default:
                         nonBadgeTopics.push(topic)
