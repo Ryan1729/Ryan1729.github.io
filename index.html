@@ -24,7 +24,6 @@ a:visited {
 </style>
 </head>
 <body>
-<div id="badge-gallery"></div>
 <label id="sort-button-label" for="sort-button">Loading ...</label>
 <button id="sort-button">Loading ...</button>
 <div id="the-list"></div>
@@ -115,17 +114,17 @@ a:visited {
     const INCOMPLETE_PROBABLY_FOREVER = `
     <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="172" height="20" role="img" aria-label="incomplete: probably forever">
       <title>incomplete: probably forever</title>
-      <linearGradient id="s" x2="0" y2="100%">
+      <linearGradient id="12x3mjs-s" x2="0" y2="100%">
         <stop offset="0" stop-color="#bbb" stop-opacity=".1" />
         <stop offset="1" stop-opacity=".1" />
       </linearGradient>
-      <clipPath id="r">
+      <clipPath id="12x3mjs-r">
         <rect width="172" height="20" rx="3" fill="#fff" />
       </clipPath>
-      <g clip-path="url(#r)">
+      <g clip-path="url(#12x3mjs-r)">
         <rect width="71" height="20" fill="#222" />
         <rect x="71" width="101" height="20" fill="#5a7d8b" />
-        <rect width="172" height="20" fill="url(#s)" />
+        <rect width="172" height="20" fill="url(#12x3mjs-s)" />
       </g>
       <g fill="#fff" text-anchor="middle" font-family="Verdana,Geneva,DejaVu Sans,sans-serif" text-rendering="geometricPrecision" font-size="110">
         <text aria-hidden="true" x="365" y="150" fill="#010101" fill-opacity=".3" transform="scale(.1)" textLength="610">incomplete</text>
@@ -139,17 +138,17 @@ a:visited {
     const COMPLETE_NO_UPDATES_EXPECTED = `
     <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="186" height="20" role="img" aria-label="complete: no updates expected">
       <title>complete: no updates expected</title>
-      <linearGradient id="s" x2="0" y2="100%">
+      <linearGradient id="1etz378-s" x2="0" y2="100%">
         <stop offset="0" stop-color="#bbb" stop-opacity=".1" />
         <stop offset="1" stop-opacity=".1" />
       </linearGradient>
-      <clipPath id="r">
+      <clipPath id="1etz378-r">
         <rect width="186" height="20" rx="3" fill="#fff" />
       </clipPath>
-      <g clip-path="url(#r)">
+      <g clip-path="url(#1etz378-r)">
         <rect width="61" height="20" fill="#222" />
         <rect x="61" width="125" height="20" fill="#30b06e" />
-        <rect width="186" height="20" fill="url(#s)" />
+        <rect width="186" height="20" fill="url(#1etz378-s)" />
       </g>
       <g fill="#fff" text-anchor="middle" font-family="Verdana,Geneva,DejaVu Sans,sans-serif" text-rendering="geometricPrecision" font-size="110">
         <text aria-hidden="true" x="315" y="150" fill="#010101" fill-opacity=".3" transform="scale(.1)" textLength="510">complete</text>
@@ -163,17 +162,17 @@ a:visited {
     const FEELING_USABLE_MIGHT_UPDATE_LATER = `
     <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="213" height="20" role="img" aria-label="feeling usable: might update later">
       <title>feeling usable: might update later</title>
-      <linearGradient id="s" x2="0" y2="100%">
+      <linearGradient id="1bw1doa-s" x2="0" y2="100%">
         <stop offset="0" stop-color="#bbb" stop-opacity=".1" />
         <stop offset="1" stop-opacity=".1" />
       </linearGradient>
-      <clipPath id="r">
+      <clipPath id="1bw1doa-r">
         <rect width="213" height="20" rx="3" fill="#fff" />
       </clipPath>
-      <g clip-path="url(#r)">
+      <g clip-path="url(#1bw1doa-r)">
         <rect width="88" height="20" fill="#222" />
         <rect x="88" width="125" height="20" fill="#ffb937" />
-        <rect width="213" height="20" fill="url(#s)" />
+        <rect width="213" height="20" fill="url(#1bw1doa-s)" />
       </g>
       <g fill="#fff" text-anchor="middle" font-family="Verdana,Geneva,DejaVu Sans,sans-serif" text-rendering="geometricPrecision" font-size="110">
         <text aria-hidden="true" x="440" y="150" fill="#010101" fill-opacity=".3" transform="scale(.1)" textLength="800">feeling usable</text>
@@ -182,12 +181,8 @@ a:visited {
         <text x="1500" y="140" transform="scale(.1)" fill="#fff" textLength="1200">might update later</text>
       </g>
     </svg>
-    `;
 
-    // Put the longest one first becasue some state is being set the first time we render one and not when we render later ones
-    // TODO? Track that strange SVG issue down, so we can have consistent rounded corners
-    badgeGallery.innerHTML = `${FEELING_USABLE_MIGHT_UPDATE_LATER} ${INCOMPLETE_PROBABLY_FOREVER} ${COMPLETE_NO_UPDATES_EXPECTED}`;
-    badgeGallery.style.display = "none";
+    `;
 
     const getBadgeIfAny = (repoName) => {
         switch (repoName) {
