@@ -181,7 +181,54 @@ a:visited {
         <text x="1500" y="140" transform="scale(.1)" fill="#fff" textLength="1200">might update later</text>
       </g>
     </svg>
+    `;
 
+    const UNFINISHED_SOME_INTEREST_REMAINS = `
+    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="197" height="20" role="img" aria-label="unfinished: some interest remains">
+      <title>unfinished: some interest remains</title>
+      <linearGradient id="0hke13m-s" x2="0" y2="100%">
+        <stop offset="0" stop-color="#bbb" stop-opacity=".1" />
+        <stop offset="1" stop-opacity=".1" />
+      </linearGradient>
+      <clipPath id="0hke13m-r">
+        <rect width="197" height="20" rx="3" fill="#fff" />
+      </clipPath>
+      <g clip-path="url(#0hke13m-r)">
+        <rect width="69" height="20" fill="#222" />
+        <rect x="69" width="128" height="20" fill="#533354" />
+        <rect width="197" height="20" fill="url(#0hke13m-s)" />
+      </g>
+      <g fill="#fff" text-anchor="middle" font-family="Verdana,Geneva,DejaVu Sans,sans-serif" text-rendering="geometricPrecision" font-size="110">
+        <text aria-hidden="true" x="350" y="150" fill="#010101" fill-opacity=".3" transform="scale(.1)" textLength="600">unfinished</text>
+        <text x="350" y="140" transform="scale(.1)" fill="#fff" textLength="600">unfinished</text>
+        <text aria-hidden="true" x="1320" y="150" fill="#010101" fill-opacity=".3" transform="scale(.1)" textLength="1200">some interest remains</text>
+        <text x="1320" y="140" transform="scale(.1)" fill="#fff" textLength="1200">some interest remains</text>
+      </g>
+    </svg>
+    `;
+
+    const CONTENT_BASED_DATA_ONLY_UPDATES_POSSIBLE = `
+    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="276" height="20" role="img" aria-label="content based: data-only updates possible">
+      <title>content based: data-only updates possible</title>
+      <linearGradient id="0oo2fdw-s" x2="0" y2="100%">
+        <stop offset="0" stop-color="#bbb" stop-opacity=".1" />
+        <stop offset="1" stop-opacity=".1" />
+      </linearGradient>
+      <clipPath id="0oo2fdw-r">
+        <rect width="276" height="20" rx="3" fill="#fff" />
+      </clipPath>
+      <g clip-path="url(#0oo2fdw-r)">
+        <rect width="88" height="20" fill="#222" />
+        <rect x="88" width="188" height="20" fill="#3352e1" />
+        <rect width="276" height="20" fill="url(#0oo2fdw-s)" />
+      </g>
+      <g fill="#fff" text-anchor="middle" font-family="Verdana,Geneva,DejaVu Sans,sans-serif" text-rendering="geometricPrecision" font-size="110">
+        <text aria-hidden="true" x="450" y="150" fill="#010101" fill-opacity=".3" transform="scale(.1)" textLength="800">content based</text>
+        <text x="450" y="140" transform="scale(.1)" fill="#fff" textLength="800">content based</text>
+        <text aria-hidden="true" x="1820" y="150" fill="#010101" fill-opacity=".3" transform="scale(.1)" textLength="1800">data-only updates possible</text>
+        <text x="1820" y="140" transform="scale(.1)" fill="#fff" textLength="1800">data-only updates possible</text>
+      </g>
+    </svg>
     `;
 
     const getBadgeIfAny = (repoName) => {
@@ -266,7 +313,9 @@ a:visited {
             sortButton.innerText = nextMode
 
 
-            let badgeType = ""
+            let mainBadgeType = "";
+            // Being content-based is orthoganal to other badge criteria
+            let completionBadgeType = "";
             let nonBadgeTopics = [];
             for (topic of repo.topics) {
                 switch (topic.toLowerCase()) {
@@ -275,39 +324,71 @@ a:visited {
                     case "incomplete-probably-forever":
                     case "incomplete probably forever":
                     case "incomplete, probably forever":
-                        badgeType = INCOMPLETE_PROBABLY_FOREVER;
+                        if (mainBadgeType != COMPLETE_NO_UPDATES_EXPECTED) {
+                            mainBadgeType = INCOMPLETE_PROBABLY_FOREVER;
+                        }
                     break
                     case "complete":
                     case "complete_no_updates_expected":
                     case "complete-no-updates-expected":
                     case "complete no updates expected":
                     case "complete, no updates expected":
-                        badgeType = COMPLETE_NO_UPDATES_EXPECTED;
+                        mainBadgeType = COMPLETE_NO_UPDATES_EXPECTED;
                     break
                     case "usable":
                     case "feeling usable":
+                    case "feeling-usable":
                     case "might update later":
+                    case "might-update-later":
                     case "feeling_usable_might_update_later":
                     case "feeling-usable-might-update-later":
                     case "feeling usable might update later":
                     case "feeling usable, might update later":
-                        if (badgeType != COMPLETE_NO_UPDATES_EXPECTED) {
-                            badgeType = FEELING_USABLE_MIGHT_UPDATE_LATER;
+                        if (mainBadgeType != COMPLETE_NO_UPDATES_EXPECTED) {
+                            mainBadgeType = FEELING_USABLE_MIGHT_UPDATE_LATER;
                         }
+                    break
+                    case "unfinished":
+                    case "some interest remains":
+                    case "some-interest-remains":
+                    case "unfinished_some_interest_remains":
+                    case "unfinished-some-interest-remains":
+                    case "unfinished some interest remains":
+                    case "unfinished, some interest remains":
+                        if (mainBadgeType != COMPLETE_NO_UPDATES_EXPECTED) {
+                            mainBadgeType = UNFINISHED_SOME_INTEREST_REMAINS;
+                        }
+                    break
+                    case "content":
+                    case "content_based":
+                    case "content-based":
+                    case "data_only_updates_possible":
+                    case "data-only-updates-possible":
+                    case "content_based_data_only_updates_possible":
+                    case "content-based-data-only-updates-possible":
+                    case "content based data only updates possible":
+                    case "content based data-only updates possible":
+                    case "content-based data only updates possible":
+                    case "content-based data-only updates possible":
+                    case "content based, data only updates possible":
+                    case "content based, data-only updates possible":
+                    case "content-based, data only updates possible":
+                    case "content-based, data-only updates possible":
+                        completionBadgeType = CONTENT_BASED_DATA_ONLY_UPDATES_POSSIBLE;
                     break
                     default:
                         nonBadgeTopics.push(topic)
                 }
             }
 
-            if (badgeType === "") {
-                badgeType = getBadgeIfAny(repo.name);
+            if (mainBadgeType === "") {
+                mainBadgeType = getBadgeIfAny(repo.name);
             }
 
             article.innerHTML = `
                 <h3>${repo.homepage ? `<a href="${repo.homepage}">${repo.name}</a>` : repo.name}</h3>
 
-                ${badgeType}
+                ${mainBadgeType} ${completionBadgeType}
 
                 <p>${repo.description || ""}</p>
 
