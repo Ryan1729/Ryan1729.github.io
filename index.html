@@ -93,6 +93,8 @@ a:visited {
 
 
     const ALPHA = "Alphabetical By Name"
+    const BADGES_DESC = "Badges (Desc)"
+    const BADGES_ASC = "Badges (Asc)"
     const CREATED_AT_DESC = "Create Date (Desc)"
     const CREATED_AT_ASC = "Create Date (Asc)"
     const UPDATED_AT_DESC = "Update Date (Desc)"
@@ -100,6 +102,8 @@ a:visited {
 
     const MODES = [
         ALPHA,
+        BADGES_DESC,
+        BADGES_ASC,
         CREATED_AT_DESC,
         CREATED_AT_ASC,
         UPDATED_AT_DESC,
@@ -270,6 +274,93 @@ a:visited {
         }
     }
 
+    const getBadgeInfo = (repo) => {
+         let mainBadgeType = "";
+        // Being content-based is orthoganal to other badge criteria
+        let completionBadgeType = "";
+        let nonBadgeTopics = [];
+
+        for (topic of repo.topics) {
+            switch (topic.toLowerCase()) {
+                case "incomplete":
+                case "incomplete_probably_forever":
+                case "incomplete-probably-forever":
+                case "incomplete probably forever":
+                case "incomplete, probably forever":
+                    if (mainBadgeType != COMPLETE_NO_UPDATES_EXPECTED) {
+                        mainBadgeType = INCOMPLETE_PROBABLY_FOREVER;
+                    }
+                break
+                case "complete":
+                case "complete_no_updates_expected":
+                case "complete-no-updates-expected":
+                case "complete no updates expected":
+                case "complete, no updates expected":
+                    mainBadgeType = COMPLETE_NO_UPDATES_EXPECTED;
+                break
+                case "usable":
+                case "feeling usable":
+                case "feeling-usable":
+                case "might update later":
+                case "might-update-later":
+                case "feeling_usable_might_update_later":
+                case "feeling-usable-might-update-later":
+                case "feeling usable might update later":
+                case "feeling usable, might update later":
+                    if (mainBadgeType != COMPLETE_NO_UPDATES_EXPECTED) {
+                        mainBadgeType = FEELING_USABLE_MIGHT_UPDATE_LATER;
+                    }
+                break
+                case "unfinished":
+                case "some interest remains":
+                case "some-interest-remains":
+                case "unfinished_some_interest_remains":
+                case "unfinished-some-interest-remains":
+                case "unfinished some interest remains":
+                case "unfinished, some interest remains":
+                    if (mainBadgeType != COMPLETE_NO_UPDATES_EXPECTED) {
+                        mainBadgeType = UNFINISHED_SOME_INTEREST_REMAINS;
+                    }
+                break
+                case "content":
+                case "content_based":
+                case "content-based":
+                case "data_only_updates_possible":
+                case "data-only-updates-possible":
+                case "content_based_data_only_updates_possible":
+                case "content-based-data-only-updates-possible":
+                case "content based data only updates possible":
+                case "content based data-only updates possible":
+                case "content-based data only updates possible":
+                case "content-based data-only updates possible":
+                case "content based, data only updates possible":
+                case "content based, data-only updates possible":
+                case "content-based, data only updates possible":
+                case "content-based, data-only updates possible":
+                    completionBadgeType = CONTENT_BASED_DATA_ONLY_UPDATES_POSSIBLE;
+                break
+                default:
+                    nonBadgeTopics.push(topic)
+            }
+        }
+
+        if (mainBadgeType === "") {
+            mainBadgeType = getBadgeIfAny(repo.name);
+        }
+
+        return {
+            mainBadgeType,
+            completionBadgeType,
+            nonBadgeTopics,
+        }
+    };
+
+    const getBadgeSortKey = (repo) => {
+        let { mainBadgeType, completionBadgeType } = getBadgeInfo(repo);
+
+        return mainBadgeType + completionBadgeType;
+    };
+
     const render = (modeIndex) => {
         const mode = MODES[modeIndex]
         const nextMode = MODES[nextModeIndex(modeIndex)]
@@ -278,6 +369,12 @@ a:visited {
             default:
             case ALPHA:
                 repos.sort((a, b) => a.name.localeCompare(b.name))
+            break;
+            case BADGES_DESC:
+                repos.sort((a, b) => getBadgeSortKey(b).localeCompare(getBadgeSortKey(a)))
+            break;
+            case BADGES_ASC:
+                repos.sort((a, b) => getBadgeSortKey(a).localeCompare(getBadgeSortKey(b)))
             break;
             case CREATED_AT_DESC:
                 // reversed for descending order
@@ -312,78 +409,11 @@ a:visited {
             sortButtonLabel.innerText = mode
             sortButton.innerText = nextMode
 
-
-            let mainBadgeType = "";
-            // Being content-based is orthoganal to other badge criteria
-            let completionBadgeType = "";
-            let nonBadgeTopics = [];
-            for (topic of repo.topics) {
-                switch (topic.toLowerCase()) {
-                    case "incomplete":
-                    case "incomplete_probably_forever":
-                    case "incomplete-probably-forever":
-                    case "incomplete probably forever":
-                    case "incomplete, probably forever":
-                        if (mainBadgeType != COMPLETE_NO_UPDATES_EXPECTED) {
-                            mainBadgeType = INCOMPLETE_PROBABLY_FOREVER;
-                        }
-                    break
-                    case "complete":
-                    case "complete_no_updates_expected":
-                    case "complete-no-updates-expected":
-                    case "complete no updates expected":
-                    case "complete, no updates expected":
-                        mainBadgeType = COMPLETE_NO_UPDATES_EXPECTED;
-                    break
-                    case "usable":
-                    case "feeling usable":
-                    case "feeling-usable":
-                    case "might update later":
-                    case "might-update-later":
-                    case "feeling_usable_might_update_later":
-                    case "feeling-usable-might-update-later":
-                    case "feeling usable might update later":
-                    case "feeling usable, might update later":
-                        if (mainBadgeType != COMPLETE_NO_UPDATES_EXPECTED) {
-                            mainBadgeType = FEELING_USABLE_MIGHT_UPDATE_LATER;
-                        }
-                    break
-                    case "unfinished":
-                    case "some interest remains":
-                    case "some-interest-remains":
-                    case "unfinished_some_interest_remains":
-                    case "unfinished-some-interest-remains":
-                    case "unfinished some interest remains":
-                    case "unfinished, some interest remains":
-                        if (mainBadgeType != COMPLETE_NO_UPDATES_EXPECTED) {
-                            mainBadgeType = UNFINISHED_SOME_INTEREST_REMAINS;
-                        }
-                    break
-                    case "content":
-                    case "content_based":
-                    case "content-based":
-                    case "data_only_updates_possible":
-                    case "data-only-updates-possible":
-                    case "content_based_data_only_updates_possible":
-                    case "content-based-data-only-updates-possible":
-                    case "content based data only updates possible":
-                    case "content based data-only updates possible":
-                    case "content-based data only updates possible":
-                    case "content-based data-only updates possible":
-                    case "content based, data only updates possible":
-                    case "content based, data-only updates possible":
-                    case "content-based, data only updates possible":
-                    case "content-based, data-only updates possible":
-                        completionBadgeType = CONTENT_BASED_DATA_ONLY_UPDATES_POSSIBLE;
-                    break
-                    default:
-                        nonBadgeTopics.push(topic)
-                }
-            }
-
-            if (mainBadgeType === "") {
-                mainBadgeType = getBadgeIfAny(repo.name);
-            }
+            let {
+                mainBadgeType,
+                completionBadgeType,
+                nonBadgeTopics,
+            } = getBadgeInfo(repo);
 
             article.innerHTML = `
                 <h3>${repo.homepage ? `<a href="${repo.homepage}">${repo.name}</a>` : repo.name}</h3>
